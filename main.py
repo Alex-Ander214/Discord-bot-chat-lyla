@@ -3,14 +3,11 @@ import os
 import io
 import json
 import re
-from discord.ext import commands
-from discord import Embed, app_commands
-from discord.ext import commands
-from gasmii import text_model, image_model
-import re
-import aiohttp
 import discord
 import google.generativeai as genai
+from discord.ext import commands
+from discord import Embed, app_commands
+from gasmii import text_model, image_model
 from dotenv import load_dotenv
 
 message_history = {}
@@ -127,8 +124,14 @@ async def on_message(message):
     # Ignore messages sent by the bot
     if message.author == bot.user:
         return
-    # Check if the bot is mentioned or the message is a DM
-    if bot.user.mentioned_in(message) or isinstance(message.channel, discord.DMChannel):
+    # Check if the bot is mentioned, the message is a DM, or it's in a designated chatbot channel
+    guild_id = str(message.guild.id) if message.guild else None
+    is_chatbot_channel = False
+
+    if guild_id and guild_id in chatbot_channels:
+        is_chatbot_channel = str(message.channel.id) == chatbot_channels[guild_id]['channel_id']
+
+    if bot.user.mentioned_in(message) or isinstance(message.channel, discord.DMChannel) or is_chatbot_channel:
         #Start Typing to seem like something happened
         cleaned_text = clean_discord_message(message.content)
 
