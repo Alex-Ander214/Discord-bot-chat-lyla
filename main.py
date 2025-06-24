@@ -70,11 +70,11 @@ async def on_ready():
 
 
 
-@bot.hybrid_command(name="reset", description="Clears bot message history")
+@bot.hybrid_command(name="reset", description="Borra el historial de mensajes del bot")
 async def reset(ctx):
     global message_history
     message_history = {}
-    await ctx.send("🤖 Bot message history has been cleared.")
+    await ctx.send("🤖 El historial de mensajes del bot ha sido borrado.")
 
     
 def create_chatbot_channels_file():
@@ -93,10 +93,10 @@ if os.path.exists(chatbot_channels_file):
         chatbot_channels = json.load(file)
 
 # Command to set or toggle chatbot channel
-@bot.hybrid_command(name="set_chatbot", description="Set or toggle chatbot channel")
+@bot.hybrid_command(name="set_chatbot", description="Configurar o alternar canal del chatbot")
 async def set_chatbot(ctx, channel: discord.TextChannel):
     if ctx.guild is None:
-        await ctx.send("This command can only be used in a server.")
+        await ctx.send("Este comando solo puede usarse en un servidor.")
         return
 
     guild_id = str(ctx.guild.id)
@@ -107,13 +107,13 @@ async def set_chatbot(ctx, channel: discord.TextChannel):
     if guild_id in chatbot_channels:
         if chatbot_channels[guild_id]['channel_id'] == str(channel.id):
             del chatbot_channels[guild_id]
-            await ctx.send(f"Chatbot responses have been toggled off for #{channel.name}.")
+            await ctx.send(f"Las respuestas del chatbot han sido desactivadas para #{channel.name}.")
         else:
             chatbot_channels[guild_id] = {'channel_id': str(channel.id)}
-            await ctx.send(f"Chatbot responses have been set for #{channel.name}.")
+            await ctx.send(f"Las respuestas del chatbot han sido configuradas para #{channel.name}.")
     else:
         chatbot_channels[guild_id] = {'channel_id': str(channel.id)}
-        await ctx.send(f"Chatbot responses have been set for #{channel.name}.")
+        await ctx.send(f"Las respuestas del chatbot han sido configuradas para #{channel.name}.")
 
     with open(chatbot_channels_file, 'w') as file:
         json.dump(chatbot_channels, file, indent=4)
@@ -148,7 +148,7 @@ async def on_message(message):
                         async with aiohttp.ClientSession() as session:
                             async with session.get(attachment.url) as resp:
                                 if resp.status != 200:
-                                    await message.channel.send('Unable to download the image.')
+                                    await message.channel.send('No se pudo descargar la imagen.')
                                     return
                                 image_data = await resp.read()
                                 response_text = await generate_response_with_image_and_text(image_data, cleaned_text)
@@ -159,11 +159,11 @@ async def on_message(message):
             else:
                 print("New Message FROM:" + str(message.author.id) + ": " + cleaned_text)
                 #Check for Keyword Reset
-                if "RESET" in cleaned_text:
+                if "RESET" in cleaned_text or "REINICIAR" in cleaned_text.upper():
                     #End back message
                     if message.author.id in message_history:
                         del message_history[message.author.id]
-                    await message.channel.send("🤖 History Reset for user: " + str(message.author.name))
+                    await message.channel.send("🤖 Historial reiniciado para el usuario: " + str(message.author.name))
                     return
                 await message.add_reaction('💬')
 

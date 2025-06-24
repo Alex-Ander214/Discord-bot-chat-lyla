@@ -32,5 +32,19 @@ safety_settings = [
     {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_MEDIUM_AND_ABOVE"},
     {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_MEDIUM_AND_ABOVE"}
 ]
-text_model = genai.GenerativeModel(model_name="gemini-1.5-flash", generation_config=text_generation_config, safety_settings=safety_settings)
-image_model = genai.GenerativeModel(model_name="gemini-1.5-flash", generation_config=image_generation_config, safety_settings=safety_settings)
+# Sistema de instrucciones para respuestas en español
+system_instruction = """Eres un asistente de Discord útil y amigable. Responde siempre en español de manera natural y conversacional. 
+Sé creativo, divertido y útil en tus respuestas. Puedes usar emojis para hacer las conversaciones más dinámicas."""
+
+text_model = genai.GenerativeModel(
+    model_name="gemini-1.5-flash", 
+    generation_config=text_generation_config, 
+    safety_settings=safety_settings,
+    system_instruction=system_instruction
+)
+image_model = genai.GenerativeModel(
+    model_name="gemini-1.5-flash", 
+    generation_config=image_generation_config, 
+    safety_settings=safety_settings,
+    system_instruction=system_instruction
+)
