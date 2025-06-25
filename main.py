@@ -19,7 +19,7 @@ GOOGLE_AI_KEY = os.getenv("GOOGLE_AI_KEY")
 DISCORD_BOT_TOKEN = os.getenv("DISCORD_BOT_TOKEN")
 MAX_HISTORY = int(os.getenv("MAX_HISTORY"))
 
-#CUSTOM_PERSONALITY = os.getenv("CUSTOM_PERSONALITY") --- this shit is disgusting asf and booring old skill for custom personality fuck it and fuck you if u enable it (gonna update it soon & set chatbo)
+#CUSTOM_PERSONALITY = os.getenv("CUSTOM_PERSONALITY") --- this shit is disgusting asf and booring old skill for custom personality fuck it and fuck you if u enable it (gonna update it soon & set chatbo)Esta mierda es repugnante y aburrida, vieja habilidad para la personalidad personalizada, que se joda y que se joda usted si la habilita (pronto la actualizaré y configuraré el chatbot)
 
 
 
@@ -59,9 +59,9 @@ async def on_ready():
     """
 
     print(ascii_art)
-    print(print_in_color(f"{bot.user} aka {bot.user.name} has connected to Discord!", "\033[1;97"))
-    print(print_in_color(f"  Loaded {num_commands} commands", "1;35"))
-    print(print_in_color(f"      Invite link: {invite_link}", "1;36"))
+    print(print_in_color(f"{bot.user} aka {bot.user.name} ¡se ha conectado a Discord!", "\033[1;97"))
+    print(print_in_color(f"  Cargado comandos: {num_commands} comandos exitosos", "1;35"))
+    print(print_in_color(f"      Enlace de invitación: {invite_link}", "1;36"))
 
 
 # Function to generate response based on custom personality prompts
