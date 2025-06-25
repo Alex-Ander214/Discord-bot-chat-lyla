@@ -1,4 +1,5 @@
 import aiohttp
+from aiohttp import web
 import os
 import io
 import json
@@ -9,11 +10,30 @@ from discord.ext import commands
 from discord import Embed, app_commands
 from gasmii import text_model, image_model
 from dotenv import load_dotenv
+import asyncio
 
 message_history = {}
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix="/", intents=intents, heartbeat_timeout=60)
 load_dotenv()
+
+# Web server for UptimeRobot monitoring
+async def health_check(request):
+    return web.Response(text="OK", status=200)
+
+async def status_page(request):
+    status_info = {
+        "status": "online",
+        "bot_name": str(bot.user.name) if bot.user else "Bot not ready",
+        "guilds": len(bot.guilds) if bot.guilds else 0,
+        "users": sum(guild.member_count for guild in bot.guilds) if bot.guilds else 0
+    }
+    return web.json_response(status_info)
+
+app = web.Application()
+app.router.add_get('/', health_check)
+app.router.add_get('/status', status_page)
+app.router.add_get('/ping', health_check)
 
 GOOGLE_AI_KEY = os.getenv("GOOGLE_AI_KEY")
 DISCORD_BOT_TOKEN = os.getenv("DISCORD_BOT_TOKEN")
@@ -249,4 +269,24 @@ def clean_discord_message(input_string):
 
 
 #---------------------------------------------Run Bot-------------------------------------------------
-bot.run(DISCORD_BOT_TOKEN)
+async def start_bot():
+    """Start the Discord bot"""
+    await bot.start(DISCORD_BOT_TOKEN)
+
+async def start_web_server():
+    """Start the web server for UptimeRobot"""
+    runner = web.AppRunner(app)
+    await runner.setup()
+    site = web.TCPSite(runner, '0.0.0.0', 5000)
+    await site.start()
+    print("🌐 Servidor web iniciado en puerto 5000 para monitoreo de UptimeRobot")
+
+async def main():
+    """Run both the bot and web server concurrently"""
+    await asyncio.gather(
+        start_web_server(),
+        start_bot()
+    )
+
+if __name__ == "__main__":
+    asyncio.run(main())
